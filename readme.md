@@ -1,5 +1,5 @@
-# Causal Inference with Independent Hidden Variables
-
+# Causal Inference with Independent Hidden Confounders
+Causal inference with independent hidden confounders.
 
 
 ## Requirements

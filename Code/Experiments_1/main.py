@@ -9,4 +9,10 @@
 '''
 
 # %% Import Package
-import numpy as np
+# Basic
+import os
+# 
+import read
+
+# %%
+print(os.getcwd())

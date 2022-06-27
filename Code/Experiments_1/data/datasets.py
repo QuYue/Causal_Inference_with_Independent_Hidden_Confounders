@@ -27,6 +27,17 @@ def load(dataset_name):
     """
     print(dataset_name)
 
+    # if dataset_name is string
+    if not isinstance(dataset_name, str):
+        raise ValueError("dataset_name must be a string.")
+
+    if dataset_name.lower() == "":
+        pass
+    elif dataset_name == "":
+        pass
+    else:
+        raise ValueError(f"There is no dataset called '{dataset_name}'.")
+
 # %% Main Function
 if __name__ == "__main__":
     print('datasets')

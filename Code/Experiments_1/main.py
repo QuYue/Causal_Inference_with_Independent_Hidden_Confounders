@@ -20,6 +20,7 @@ os.chdir(os.path.dirname(__file__))
 
 # Self-defined
 import data
+import model
 
 # %% Set Super-parameters
 class PARAM():
@@ -39,9 +40,6 @@ class PARAM():
             torch.manual_seed(self.seed)
             torch.cuda.manual_seed(self.seed)
             torch.cuda.manual_seed_all(self.seed)   # If you are using multi-GPU.
-
-
-        
         
 Parm = PARAM()
 
@@ -49,3 +47,6 @@ Parm = PARAM()
 if __name__ == "__main__":
     print(1)
     data.datasets.load(Parm.dataset_name)
+
+
+

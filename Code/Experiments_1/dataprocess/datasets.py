@@ -10,7 +10,8 @@
 
 # %% Import Packages
 # Basic
-
+import torch
+import torch.utils.data as Data
 # %% Classes
 
 
@@ -25,18 +26,22 @@ def load(dataset_name):
     Args:
         dataset_name (_type_): _description_
     """
-    print(dataset_name)
-
-    # if dataset_name is string
+    # If dataset_name is string
     if not isinstance(dataset_name, str):
-        raise ValueError("dataset_name must be a string.")
+        raise ValueError("The type of dataset_name must be a string.")
 
-    if dataset_name.lower() == "":
-        pass
-    elif dataset_name == "":
+    # Find dataset
+    dataset_name_lower = dataset_name.lower().strip()
+    if dataset_name_lower == "synthetic":
+        from .dataset_Synthetic import load as load_synthetic
+        data_orginal = load_synthetic(random_seed=seed, **kwargs)
+        dataset = data_orginal
+    elif dataset_name_lower == "":
         pass
     else:
         raise ValueError(f"There is no dataset called '{dataset_name}'.")
+
+    return dataset
 
 # %% Main Function
 if __name__ == "__main__":

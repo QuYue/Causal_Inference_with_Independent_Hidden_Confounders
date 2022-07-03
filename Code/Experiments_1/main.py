@@ -19,8 +19,8 @@ import numpy as np
 os.chdir(os.path.dirname(__file__))
 
 # Self-defined
-import data
-import model
+import dataprocess as dp
+import modelbase as mb
 
 # %% Set Super-parameters
 class PARAM():
@@ -45,8 +45,7 @@ Parm = PARAM()
 
 # %% Main Function
 if __name__ == "__main__":
-    print(1)
-    data.datasets.load(Parm.dataset_name)
+    dp.datasets.load(Parm.dataset_name)
 
 
 

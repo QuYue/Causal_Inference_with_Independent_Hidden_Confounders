@@ -107,6 +107,7 @@ def load(
             Potential outcomes in data.
         }
     """
+    print(random_seed)
     if random_seed is not None:
         pyro.set_rng_seed(random_seed)
     return data_synthetic(data_number, data_dimensions, ifprint)
@@ -115,3 +116,5 @@ def load(
 # %% Main Function
 if __name__ == "__main__":
     data = load(data_number=1000, data_dimensions=10, ifprint=True)
+
+

@@ -16,15 +16,25 @@ import torch.utils.data as Data
 
 
 # %% Functions
-def load(dataset_name):
+def load(dataset_name, seed=None, **kwargs):
     """
     The function of loading datasets which can: 
         - Load the dataset.
         - Preprocess the data.
         - Return train/test split.
 
-    Args:
-        dataset_name (_type_): _description_
+    Parameters
+    ----------
+    dataset_name: str
+        Dataset name.
+    seed: int, optional
+        Random seed. (default: None)
+    kwargs: dict, keyword arguments
+        Other parameters. (default: {})
+
+    Returns
+    -------
+    dataset: 
     """
     # If dataset_name is string
     if not isinstance(dataset_name, str):

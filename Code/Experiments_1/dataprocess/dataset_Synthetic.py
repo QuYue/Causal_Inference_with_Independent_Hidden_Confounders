@@ -55,6 +55,7 @@ def data_synthetic(
     y_obs = (1-t)*y_0 + t*y_1
 
     if ifprint:
+        print(f"Synthetic Dataset Introduction:")
         print(f"z: {z.shape}")
         print(f"x: {x.shape}")
         print(f"t: {t.shape}")
@@ -83,13 +84,13 @@ def load(
 
     Parameters
     ----------
-    data_number: int
-        Number of samples.
-    data_dimensions: int
-        Number of dimensions.
-    ifprint: bool
-        If print the information of the datasets.
-    random_seed: int
+    data_number: int, optional
+        Number of samples. (default: 1000)
+    data_dimensions: int, optional
+        Number of dimensions. (default: 10)
+    ifprint: bool, optional
+        If print the information of the datasets. (default: False)
+    random_seed: int or None, optional
         Random seed.( Default: None )
     kwargs: any
         Other arguments. 
@@ -107,7 +108,7 @@ def load(
             Potential outcomes in data.
         }
     """
-    print(random_seed)
+    # print(random_seed)
     if random_seed is not None:
         pyro.set_rng_seed(random_seed)
     return data_synthetic(data_number, data_dimensions, ifprint)

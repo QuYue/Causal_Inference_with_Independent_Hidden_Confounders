@@ -14,7 +14,9 @@
 # %% Classes
 
 # %% Functions
-
+def hello():
+    print("Hello World!")
+    
 # %% Main Functions
 if __name__ == "__main__":
     pass

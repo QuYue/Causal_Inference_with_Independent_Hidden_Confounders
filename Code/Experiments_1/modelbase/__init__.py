@@ -1,6 +1,3 @@
-from email import header
-
-
 #!/usr/bin/env python
 # -*-coding:utf-8 -*-
 '''
@@ -8,16 +5,22 @@ from email import header
 @Time    :   2022/06/23 01:11:14
 @Author  :   QuYue 
 @Email   :   quyue1541@gmail.com
-@Desc    :   __init__ of model
+@Desc    :   __init__ of modelbase
 '''
 
 # %% Import Packages
 # Basic
-import os
-import sys
-
-# Add path
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # Self-defined
-import a
+
+# Modules
+from . import a
+# %% Classes
+
+# %% Functions
+def main():
+    pass
+
+# %% Main Function
+if __name__ == '__main__':
+    main()

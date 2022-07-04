@@ -5,19 +5,26 @@
 @Time    :   2022/06/22 22:11:41
 @Author  :   QuYue 
 @Email   :   quyue1541@gmail.com
-@Desc    :   __init__ of data
+@Desc    :   __init__ of dataprocess
 '''
 
 # %% Import Packages
 # Basic
-import os
-import sys
 
 # Add path
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+# os.chdir(os.path.dirname(__file__))
 
 # Self-defined
-import datasets
 
+# Modules
+from . import datasets
 
+# %% Classes
 
+# %% Functions
+def main():
+    pass
+
+# %% Main Function
+if __name__ == '__main__':
+    main()

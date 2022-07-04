@@ -17,6 +17,16 @@ class MyStruct():
     A template of structure (class).
     """
     def __init__(self, name=None, content=[]):
+        """
+        Initial MyStruct
+
+        Parameters
+        ----------
+        name: str or None, optional
+            Structure name. (default: None)
+        content: list or tuple, optional
+            Content of this structure, which can be shown by print function. (default: [])
+        """
         # structure name
         if isinstance(name, str) or (name is None):
             self.__struct_name__ = self.__class__.__name__ if name is None else name
@@ -39,12 +49,12 @@ class MyStruct():
 
     @property
     def content_print(self):
-        if len(self.__content__) == 0:
-            return ""
-        else:
-            return f"{[i for i in self.__content__]}"
+        return "" if len(self.__content__) == 0 else f"{[i for i in self.__content__]}"
    
     def __repr__(self):
+        """
+        Print
+        """
         return self.__struct_name__ + self.content_print # put constructor arguments in the ()
 
 

@@ -56,7 +56,7 @@ def data_synthetic(
 
     if ifprint:
         print(f"Synthetic Dataset Introduction:")
-        print(f"z: {z.shape}")
+        print(f"\tz: {z.shape}")
         print(f"x: {x.shape}")
         print(f"t: {t.shape}")
         print(f"y: {y_obs.shape}")

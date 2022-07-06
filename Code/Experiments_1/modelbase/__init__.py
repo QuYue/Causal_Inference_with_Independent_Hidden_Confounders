@@ -14,7 +14,8 @@
 # Self-defined
 
 # Modules
-from . import a
+from .s_learner import S_Learner
+
 # %% Classes
 
 # %% Functions

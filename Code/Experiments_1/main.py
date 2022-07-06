@@ -117,4 +117,4 @@ Parm = PARAM()
 if __name__ == "__main__":
     print("Loading dataset ...")
     data = dp.datasets.load(Parm.dataset_name, seed=Parm.seed, **Parm.dataset.dict)
-    mb.a.hello()
+

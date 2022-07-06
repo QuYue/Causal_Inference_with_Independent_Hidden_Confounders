@@ -19,34 +19,38 @@ if __package__ is None:
 else:
     from . import layers
 
-# %% S_Learner (Classes)
-class S_Learner(nn.Module):
+# %% T_Learner (Classes)
+class T_Learner(nn.Module):
     """
-    S_Learner.
+    T_Learner.
     """
     def __init__(self, input_size, output_size=1, hidden_size=10, layer_number=3):
         """
         Initialize S_Learner model.
         """
-        super(S_Learner, self).__init__()
+        super(T_Learner, self).__init__()
         self.input_size = input_size
         self.output_size = output_size
         self.hidden_size = hidden_size
         self.layer_number = layer_number
 
-        self.net = nn.Sequential()
-        self.net.add_module('fc0', nn.Linear(self.input_size+1, self.hidden_size))
+        self.net0 = nn.Sequential()
+        self.net1 = nn.Sequential()
+
+        self.net0.add_module('fc0', nn.Linear(self.input_size, self.hidden_size))
+        self.net1.add_module('fc0', nn.Linear(self.input_size, self.hidden_size))
         for i in range(self.layer_number-1):
-            self.net.add_module(f'fc{i+1}', layers.FullyConnected(hidden_size, hidden_size, 0.5, [nn.ReLU()]))
-        self.net.add_module(f'fc_{layer_number}', layers.FullyConnected(hidden_size, output_size))
+            self.net0.add_module(f'fc{i+1}', layers.FullyConnected(hidden_size, hidden_size, 0.5, [nn.ReLU()]))
+            self.net1.add_module(f'fc{i+1}', layers.FullyConnected(hidden_size, hidden_size, 0.5, [nn.ReLU()]))
+        self.net0.add_module(f'fc_{layer_number}', layers.FullyConnected(hidden_size, output_size))
+        self.net1.add_module(f'fc_{layer_number}', layers.FullyConnected(hidden_size, output_size))
 
     def forward(self, x):
         """
         Forward propagation.
         """
-        sample_number = x.shape[0]
-        pred_y0 = self.net(torch.cat([x, torch.zeros([sample_number, 1])], dim=1))
-        pred_y1 = self.net(torch.cat([x, torch.ones([sample_number, 1])], dim=1))
+        pred_y0 = self.net0(x)
+        pred_y1 = self.net1(x)
         return pred_y0, pred_y1
 
 
@@ -55,7 +59,7 @@ if __name__ == '__main__':
     x = torch.ones([10, 5])
     t = torch.ones([10, 1])
 
-    model = S_Learner(5, 1, 10, 3)
+    model = T_Learner(5, 1, 10, 3)
     pred_y0, pred_y1 = model(x)
     print(f"x: {x.shape}")
     print(f"t: {t.shape}")

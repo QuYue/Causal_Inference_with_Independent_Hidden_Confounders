@@ -48,7 +48,7 @@ class PARAM():
         self.test_epoch = 1         # Test once every few epochs
 
         # Model
-        self.model_name_list = ["s_learner" ]   # Model name list
+        self.model_name_list = ["s_learner", "t_learner"]   # Model name list
         self.model_setting()
 
         # Records
@@ -61,6 +61,12 @@ class PARAM():
         name = model_name.lower().strip()
         if name == "s_learner":
             model_param.name = "S_Learner"
+            model_param.input_size = self.dataset.data_dimensions
+            model_param.output_size = 1
+            model_param.hidden_size = 15
+            model_param.layer_number = 3
+        elif name == "t_learner":
+            model_param.name = "T_Learner"
             model_param.input_size = self.dataset.data_dimensions
             model_param.output_size = 1
             model_param.hidden_size = 15
@@ -108,7 +114,8 @@ class PARAM():
     
     def model_setting(self):
         # Setting of models
-        self.model_list = [self.model_param_setting(name) for name in self.model_name_list]
+        self.model_param_list = [self.model_param_setting(name) for name in self.model_name_list]
+        self.model_list = [mb.get_model(param.name, param.dict) for param in self.model_param_list]
 
 
 Parm = PARAM()
@@ -117,4 +124,3 @@ Parm = PARAM()
 if __name__ == "__main__":
     print("Loading dataset ...")
     data = dp.datasets.load(Parm.dataset_name, seed=Parm.seed, **Parm.dataset.dict)
-

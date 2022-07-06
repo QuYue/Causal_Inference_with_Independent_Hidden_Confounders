@@ -15,13 +15,20 @@
 
 # Modules
 from .s_learner import S_Learner
-
-# %% Classes
+from .t_learner import T_Learner
 
 # %% Functions
-def main():
-    pass
+def get_model(model_name, kwargs):
+    """
+    Get model.
+    """
+    if model_name == "S_Learner":
+        return S_Learner(**kwargs)
+    elif model_name == "T_Learner":
+        return T_Learner(**kwargs)
+    else:
+        raise ValueError(f"There is no model called '{model_name}'.")
 
 # %% Main Function
 if __name__ == '__main__':
-    main()
+    pass

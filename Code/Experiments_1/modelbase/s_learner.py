@@ -24,7 +24,7 @@ class S_Learner(nn.Module):
     """
     S_Learner.
     """
-    def __init__(self, input_size, output_size=1, hidden_size=10, layer_number=3):
+    def __init__(self, input_size, output_size=1, hidden_size=10, layer_number=3, **kwargs):
         """
         Initialize S_Learner model.
         """

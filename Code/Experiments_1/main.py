@@ -30,7 +30,7 @@ class PARAM():
         # Dataset
         self.dataset_name = "Synthetic"     # Dataset name
         self.train_valid_test = [4, 1, 1]   # The ratio of training, validation and test data
-        self.cv = 1                         # Fold number for cross-validation
+        self.cv = 5                         # Fold number for cross-validation
         self.dataset_setting()              # Dataset setting 
 
         # Random seed
@@ -55,6 +55,10 @@ class PARAM():
         self.ifrecord = True                # If record
         self.now = datetime.datetime.now()  # Current time
     
+    @property
+    def train_ratio(self):
+        return self.train_valid_test[0] / (self.train_valid_test[0]+self.train_valid_test[2])
+    
     def model_param_setting(self, model_name):
         # Setting of parameters of models
         model_param = utils.tools.MyStruct('model_param', [model_name])
@@ -78,10 +82,13 @@ class PARAM():
     def dataset_setting(self):
         # Setting of dataset
         self.dataset = utils.tools.MyStruct('dataset', [self.dataset_name])
+        self.dataset.cv = self.cv
+        self.dataset.train_ratio = self.train_ratio
         if self.dataset_name.lower().strip() == "synthetic":
             self.dataset.data_number = 10000
             self.dataset.data_dimensions = 10
             self.dataset.ifprint = True
+            self.dataset.stratify = 't'
 
     def random_setting(self):
         # Setting of random seed
@@ -123,6 +130,6 @@ Parm = PARAM()
 # %% Main Function
 if __name__ == "__main__":
     print("Loading dataset ...")
-    data = dp.datasets.load(Parm.dataset_name, seed=Parm.seed, **Parm.dataset.dict)
-    dataset = dp.process.data_split(data, Parm.dataset_name, train_ratio=0.8, cv=5, seed=1, stratify='t')
-    model = Parm.model_list
+    dataset = dp.datasets.load_dataset(Parm.dataset_name, seed=Parm.seed, **Parm.dataset.dict)
+
+# %%

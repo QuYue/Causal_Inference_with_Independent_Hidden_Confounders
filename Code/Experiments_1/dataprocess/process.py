@@ -102,13 +102,32 @@ class DataSet(utils.tools.MyStruct):
 
 # %% Functions
 # Data split
-def data_split(data, dataset_name, train_ratio=0.8, cv=1, seed=1, stratify=None):
+def data_split(data, dataset_name, train_ratio=0.8, cv=1, seed=1, stratify=None, **kwargs):
     '''
     The function of splitting data which can: 
         - Split the dataset into train/test split.
         - Also split the dataset proportionally by stratify.
         - Also split the dataset into train/test split by cross-validation.
+    
+    Parameters
+    ----------
+    data: dict
+        The data.
+    dataset_name: str
+        Dataset name.
+    train_ratio: float, optional
+        The ratio of trainset. (default: 0.8)
+    cv: int, optional
+        The number of folds for cross-validation. (default: 1)
+    seed: int, optional
+        Random seed. (default: None)
+    kwargs: dict, keyword arguments
+        Other parameters. (default: {})
 
+    Returns
+    -------
+    dataset: DataSet
+        The dataset.
     '''
     # If data is dict
     if not isinstance(data, dict):

@@ -18,6 +18,7 @@
 
 # Modules
 from . import datasets
+from . import process
 
 # %% Classes
 

@@ -80,7 +80,7 @@ def load(
     random_seed: int = None,
     **kwargs
     ) -> Tuple:
-    """_summary_
+    """Load dataset Synthetic.
 
     Parameters
     ----------

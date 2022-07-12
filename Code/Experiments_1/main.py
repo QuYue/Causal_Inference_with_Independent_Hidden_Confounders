@@ -124,3 +124,5 @@ Parm = PARAM()
 if __name__ == "__main__":
     print("Loading dataset ...")
     data = dp.datasets.load(Parm.dataset_name, seed=Parm.seed, **Parm.dataset.dict)
+    dataset = dp.process.data_split(data, Parm.dataset_name, train_ratio=0.8, cv=5, seed=1, stratify='t')
+    model = Parm.model_list

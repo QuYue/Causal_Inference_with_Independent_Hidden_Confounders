@@ -12,6 +12,8 @@
 # Basic
 import os
 import sys
+import torch
+import torch.utils.data as Data
 from sklearn.model_selection import train_test_split, StratifiedKFold, KFold
 
 # Add path
@@ -50,6 +52,10 @@ class DataSet(utils.tools.MyStruct):
         self.data = []
 
     def __len__(self):
+        return len(self.data)
+    
+    @property
+    def cv(self):
         return len(self.data)
 
     def tolist(self):
@@ -172,6 +178,87 @@ def data_split(data, dataset_name, train_ratio=0.8, cv=1, seed=1, stratify=None,
     return dataset
 
 
+# CTorch
+def convert_torch(data, key_list, type_list):
+    '''
+    The function of converting data to torch.Tensor.
+    
+    Parameters
+    ----------
+    data: dict
+        The data.
+    key_list: list
+        The list of keys.
+    type_list: list
+        The list of types.
+    kwargs: dict, keyword arguments
+        Other parameters. (default: {})
+    
+    Returns
+    -------
+    data: list
+        The converted data to torch.
+    '''
+    data_list = []
+    dtype_dict = {'int': torch.int, 'int32': torch.int32, 'int64': torch.int64, 'long': torch.long,
+                  'float': torch.float, 'float32': torch.float32, 'float64': torch.float64}
+    for i, key in enumerate(key_list):
+        data_list.append(torch.tensor(data[key], dtype=dtype_dict[type_list[i]]))
+    return data_list
+
+
+# Data Loader
+def dataloader(dataset, batch_size=32, keylist=['x', 'y'], typelist=None, pin_memory=False, **kwargs):
+    '''
+    data loader
+        - Load the dataset.
+        - Return data loader.
+
+    Parameters
+    ----------
+    dataset: OneFoldDataSet
+        has train and test.
+    batch_size: int, optional
+        Batch size. (default: 32)
+    keylist: list, optional
+        The keys list of data. (default: ['x', 'y'])
+    typelist: list, optional
+        The types list of data. (default: None)
+    pin_memory: bool, optional
+        Pin memory. (default: False)
+
+    Returns
+    -------
+    train_loader: torch.utils.data.DataLoader
+        Data loader for training data.
+    test_loader: torch.utils.data.DataLoader
+        Data loader for testing data.
+    '''
+    # If dataset is dict
+    if not isinstance(dataset, OneFoldDataSet):
+        raise ValueError("The type of dataset must be OneFoldDataSet.")
+
+    # Detect key list and type list
+    data_key_list = dataset.keys()
+    for k in keylist:
+        if k not in data_key_list:
+            raise ValueError(f"The key {k} is not in the dataset.")
+    if typelist is None:
+        typelist = ['float'] * len(keylist)
+    
+    # initial data loader
+    train_list = convert_torch(dataset.train, keylist, typelist)
+    test_list = convert_torch(dataset.test, keylist, typelist)
+
+    # TensorDataset
+    train_dataset = Data.TensorDataset(*train_list)
+    test_dataset = Data.TensorDataset(*test_list)
+
+    # DataLoader
+    train_loader = Data.DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True, pin_memory=pin_memory)
+    test_loader = Data.DataLoader(dataset=test_dataset, batch_size=batch_size, shuffle=False, pin_memory=pin_memory)
+
+    return train_loader, test_loader
 # %% Main Function
 if __name__ == '__main__':
     pass

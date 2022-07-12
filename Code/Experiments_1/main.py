@@ -89,6 +89,8 @@ class PARAM():
             self.dataset.data_dimensions = 10
             self.dataset.ifprint = True
             self.dataset.stratify = 't'
+            self.dataset.keylist = ['x', 't', 'y', 'potential_y']
+            self.dataset.typelist = ['float', 'float', 'float', 'float']
 
     def random_setting(self):
         # Setting of random seed
@@ -131,5 +133,15 @@ Parm = PARAM()
 if __name__ == "__main__":
     print("Loading dataset ...")
     dataset = dp.datasets.load_dataset(Parm.dataset_name, seed=Parm.seed, **Parm.dataset.dict)
+    for cv in range(dataset.cv):
+        print(f"Cross Validation {cv}: {datetime.datetime.now().strftime('%Y-%m-%d_%H:%M:%S')}")
+        train_loader, test_loader = dp.process.dataloader(dataset[cv], batch_size=Parm.batch_size, **Parm.dataset.dict)
+
+        for epoch in range(Parm.epochs):
+            # Training
+            for batch_idx, data in enumerate(train_loader):
+                data = [data.to(Parm.device) for data in data]
+                data = dict(zip(Parm.dataset.keylist, data))
+
 
 # %%

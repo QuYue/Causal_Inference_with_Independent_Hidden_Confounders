@@ -5,7 +5,7 @@
 @Time    :   2022/06/23 01:11:14
 @Author  :   QuYue 
 @Email   :   quyue1541@gmail.com
-@Desc    :   __init__ of modelbase
+@Desc    :   __init__ of modeler
 '''
 
 # %% Import Packages

@@ -21,8 +21,9 @@ os.chdir(os.path.dirname(__file__))
 
 # Self-defined
 import utils
-import dataprocess as dp
-import modelbase as mb
+import dataprocessor as dp
+import modeler as ml
+import recorder as rd
 
 # %% Set Super-parameters
 class PARAM():
@@ -87,10 +88,10 @@ class PARAM():
         if self.dataset_name.lower().strip() == "synthetic":
             self.dataset.data_number = 10000
             self.dataset.data_dimensions = 10
-            self.dataset.ifprint = True
+            self.dataset.ifprint = False
             self.dataset.stratify = 't'
             self.dataset.keylist = ['x', 't', 'y', 'potential_y']
-            self.dataset.typelist = ['float', 'float', 'float', 'float']
+            self.dataset.typelist = ['float', 'long', 'float', 'float']
 
     def random_setting(self):
         # Setting of random seed
@@ -124,7 +125,7 @@ class PARAM():
     def model_setting(self):
         # Setting of models
         self.model_param_list = [self.model_param_setting(name) for name in self.model_name_list]
-        self.model_list = [mb.get_model(param.name, param.dict) for param in self.model_param_list]
+        self.model_list = [ml.get_model(param.name, param.dict) for param in self.model_param_list]
 
 
 Parm = PARAM()
@@ -133,15 +134,16 @@ Parm = PARAM()
 if __name__ == "__main__":
     print("Loading dataset ...")
     dataset = dp.datasets.load_dataset(Parm.dataset_name, seed=Parm.seed, **Parm.dataset.dict)
+    print("Start training ...")
     for cv in range(dataset.cv):
         print(f"Cross Validation {cv}: {datetime.datetime.now().strftime('%Y-%m-%d_%H:%M:%S')}")
         train_loader, test_loader = dp.process.dataloader(dataset[cv], batch_size=Parm.batch_size, **Parm.dataset.dict)
 
         for epoch in range(Parm.epochs):
+            print(f"Epoch {epoch}: {datetime.datetime.now().strftime('%Y-%m-%d_%H:%M:%S')}")
             # Training
             for batch_idx, data in enumerate(train_loader):
                 data = [data.to(Parm.device) for data in data]
                 data = dict(zip(Parm.dataset.keylist, data))
-
-
-# %%
+            
+        

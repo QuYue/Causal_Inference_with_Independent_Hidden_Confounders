@@ -5,7 +5,7 @@
 @Time    :   2022/06/22 22:11:41
 @Author  :   QuYue 
 @Email   :   quyue1541@gmail.com
-@Desc    :   __init__ of dataprocess
+@Desc    :   __init__ of dataprocessor
 '''
 
 # %% Import Packages

@@ -135,15 +135,28 @@ if __name__ == "__main__":
     print("Loading dataset ...")
     dataset = dp.datasets.load_dataset(Parm.dataset_name, seed=Parm.seed, **Parm.dataset.dict)
     print("Start training ...")
+    recorders = []
     for cv in range(dataset.cv):
         print(f"Cross Validation {cv}: {datetime.datetime.now().strftime('%Y-%m-%d_%H:%M:%S')}")
         train_loader, test_loader = dp.process.dataloader(dataset[cv], batch_size=Parm.batch_size, **Parm.dataset.dict)
-
+        
+        recorder = []
         for epoch in range(Parm.epochs):
             print(f"Epoch {epoch}: {datetime.datetime.now().strftime('%Y-%m-%d_%H:%M:%S')}")
             # Training
+            record = rd.Record(0, epoch)
             for batch_idx, data in enumerate(train_loader):
                 data = [data.to(Parm.device) for data in data]
                 data = dict(zip(Parm.dataset.keylist, data))
+                batchrecord = rd.BatchRecord(size=data['x'].shape[0], index=batch_idx)  
+                batchrecord['newnew'] = [1, 2, 3]
+                record.add_batch(batchrecord)
+            record.aggregate({'new': 'sum', 'newnew': 'mean'})
+            str = record.print_all_str()
+            print()
+
+            recorder.append(record)
+        recorders.append(recorder)
+    recorders = rd.Recorder(recorders)
             
-        
+# %%

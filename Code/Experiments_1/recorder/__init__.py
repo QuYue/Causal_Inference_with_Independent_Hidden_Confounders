@@ -14,6 +14,7 @@ import os
 import sys
 import json
 import datetime
+import copy
 
 # Add path
 if __package__ is None:
@@ -90,6 +91,16 @@ class Record(BatchRecord):
     def shape(self):
         # (number of keys, batch_size, batch_num)
         return (len(self.keys()), self.size, self.batch_num)
+    
+    def tojson(self):
+        record_json = dict()
+        record_json["class"] = "Record"
+        record_json["time"] = self.time.strftime("%Y-%m-%d %H:%M:%S")
+        record_json["size"] = self.size
+        record_json["index"] = self.index
+        record_json["batch_num"] = self.batch_num
+        record_json["info"] = self.info
+        return record_json
 
     def add_batch(self, batch_record: BatchRecord):
         self.batch_num += 1
@@ -188,9 +199,10 @@ class Recorder():
     def shape(self):
         def count(a):
             dim = []
-            if isinstance(a, list) and len(a)>0:
+            if isinstance(a, list):
                 dim.append(len(a))
-                dim += count(a[0])
+                if len(a)>0:
+                    dim += count(a[0])
             return dim
         dim = count(self.info)
         return tuple(dim)
@@ -377,13 +389,57 @@ class Recorder():
                 return data
         return query_recorder(self.info, key, 0)
 
+    def tojson(self):
+        def iter(data):
+            for i, d in enumerate(data):
+                if isinstance(d, list):
+                    iter(d)
+                elif isinstance(d, Record):
+                    data[i] = d.tojson()
+        info = copy.deepcopy(self.info)
+        iter(info)
+        return info
+
+    def save(self, filename):
+        info = self.tojson()
+        with open(filename, "w", encoding="utf-8") as f:
+            json.dump(info, f)
+
+    def load_json(self, json):
+        def iter(data):
+            for i, d in enumerate(data):
+                if isinstance(d, list):
+                    iter(d)
+                elif isinstance(d, dict) and d['class'] == 'Record':
+                    temp = Record(d["size"], d["index"])
+                    temp.size, temp.batch_num = d["size"], d["batch_num"]
+                    temp.info = d["info"]
+                    data[i] = temp
+        info = json
+        iter(info)
+        self.info = info
+
 
 # %% Functions
-def read(file_name):
-    with open(file_name, 'r', 'utf-8') as f:
+def read_json(file_name):
+    with open(file_name, 'r', encoding='utf-8') as f:
         d = json.load(f)
-    return d
+    recorder = Recorder([])
+    recorder.load_json(d)
+    return recorder
 
+#%%
+def Recorder_nones(shape):
+    def create_none(s):
+        L = []
+        if len(s) == 1:
+            L = [None] * s[0]
+        else:
+            for i in range(s[0]):
+                L.append(create_none(s[1:]))
+        return L
+    d = Recorder(create_none(shape))
+    return d
 
 # %% Main Function
 if __name__ == '__main__':
@@ -409,4 +465,6 @@ if __name__ == '__main__':
     a = Recorder([[b,b],[b,b]])
     a.query('D')
 
+# %%
+# %%
 # %%

@@ -14,6 +14,7 @@ import os
 import random
 import torch
 import numpy as np
+import time
 import datetime
 
 # Add path
@@ -43,7 +44,7 @@ class PARAM():
         self.device_setting(True)   # Device setting
 
         # Training
-        self.epochs = 100           # Epochs
+        self.epochs = 3           # Epochs
         self.batch_size = 1000      # Batch size
         self.learn_rate = 0.01      # Learning rate
         self.test_epoch = 1         # Test once every few epochs
@@ -135,28 +136,34 @@ if __name__ == "__main__":
     print("Loading dataset ...")
     dataset = dp.datasets.load_dataset(Parm.dataset_name, seed=Parm.seed, **Parm.dataset.dict)
     print("Start training ...")
-    recorders = []
+    recorder = rd.Recorder_nones([dataset.cv, Parm.epochs])
     for cv in range(dataset.cv):
         print(f"Cross Validation {cv}: {datetime.datetime.now().strftime('%Y-%m-%d_%H:%M:%S')}")
         train_loader, test_loader = dp.process.dataloader(dataset[cv], batch_size=Parm.batch_size, **Parm.dataset.dict)
-        
-        recorder = []
         for epoch in range(Parm.epochs):
             print(f"Epoch {epoch}: {datetime.datetime.now().strftime('%Y-%m-%d_%H:%M:%S')}")
             # Training
-            record = rd.Record(0, epoch)
+            record = rd.Record(index=epoch)
             for batch_idx, data in enumerate(train_loader):
                 data = [data.to(Parm.device) for data in data]
                 data = dict(zip(Parm.dataset.keylist, data))
                 batchrecord = rd.BatchRecord(size=data['x'].shape[0], index=batch_idx)  
+                batchrecord['new'] = [1, 2, 3]
                 batchrecord['newnew'] = [1, 2, 3]
                 record.add_batch(batchrecord)
             record.aggregate({'new': 'sum', 'newnew': 'mean'})
+            record['time'] = time.time()
             str = record.print_all_str()
-            print()
 
-            recorder.append(record)
-        recorders.append(recorder)
-    recorders = rd.Recorder(recorders)
+            # # Testing
+            # for batch_idx, data in enumerate(test_loader):
+            #     data = [data.to(Parm.device) for data in data]
+            #     data = dict(zip(Parm.dataset.keylist, data))
+
+            recorder[cv, epoch] = record
             
 # %%
+recorder.save("save.json")
+del recorder
+
+recorder1 = rd.read_json("save.json")

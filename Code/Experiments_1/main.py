@@ -166,8 +166,8 @@ if __name__ == "__main__":
             recorder[cv, epoch] = record
             
 # %% 1
-recorder.save("save.json")
-del recorder
+# recorder.save("save.json")
+# del recorder
 
-recorder1 = rd.read_json("save.json")
+# recorder1 = rd.read_json("save.json")
 

@@ -44,7 +44,7 @@ class PARAM():
         self.device_setting(True)   # Device setting
 
         # Training
-        self.epochs = 3           # Epochs
+        self.epochs = 10           # Epochs
         self.batch_size = 1000      # Batch size
         self.learn_rate = 0.01      # Learning rate
         self.test_epoch = 1         # Test once every few epochs
@@ -107,7 +107,10 @@ class PARAM():
         # Setting of device
         if isinstance(self.gpu, bool):
             if self.gpu:
-                self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+                try:
+                    self.device = torch.device("cuda:0" if torch.cuda.is_available() else "mps:0")
+                except:
+                    self.device = torch.device("cpu")
             else:
                 self.device = torch.device("cpu")
         elif isinstance(self.gpu, int):
@@ -162,8 +165,9 @@ if __name__ == "__main__":
 
             recorder[cv, epoch] = record
             
-# %%
+# %% 1
 recorder.save("save.json")
 del recorder
 
 recorder1 = rd.read_json("save.json")
+

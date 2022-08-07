@@ -122,7 +122,13 @@ class PARAM():
                 self.device = torch.device("cpu")
         else:
             raise ValueError("The type of gpu must be bool or int.")
-        device = 'CPU' if self.device == torch.device("cpu") else f"GPU {self.device.index} ({torch.cuda.get_device_name(self.device.index)})"
+        if self.device == torch.device("cpu"):
+            device = "CPU"
+        else:
+            try:
+                device = f"GPU {self.device.index} ({torch.cuda.get_device_name(self.device.index)})"
+            except:
+                device = f"GPU {self.device.index} ({self.device.type})"
         if ifprint:
             print(f"The experimental environment is set to {device}.")
     

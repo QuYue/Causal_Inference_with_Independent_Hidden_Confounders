@@ -34,7 +34,7 @@ class MyStruct():
         if isinstance(content, list) or isinstance(content, tuple):
             pass
         else:
-            raise ValueError("The type of argument 'content' should be ")
+            raise ValueError("The type of argument 'content' should be list or tuple")
         self.__content__ = [] if len(content) == 0 else copy.deepcopy(content)
     
     @property

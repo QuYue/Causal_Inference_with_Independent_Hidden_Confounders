@@ -68,7 +68,7 @@ class MyParam(utils.parameter.PARAM):
         # Records
         self.ifrecord = True                # If record
         self.now = datetime.datetime.now()  # Current time
-        self.recorder = None
+        self.recorder = None                # Recorder (initialization)
         self.save_path = f"../../Results/Experiments_1/{self.now.strftime('%Y-%m-%d_%H-%M-%S')}"
 
         # Setting
@@ -105,7 +105,7 @@ if __name__ == "__main__":
                 data = [data.to(Parm.device) for data in data]
                 data = dict(zip(Parm.dataset.keylist, data))
             Parm.recorder[cv, epoch] = record
-        Parm.save(f"cv{cv}.json")
+        # Parm.save(f"cv{cv}.json")
     Parm.save("final.json")
 
 # %%

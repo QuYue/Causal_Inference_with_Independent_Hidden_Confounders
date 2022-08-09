@@ -18,16 +18,23 @@ os.chdir(os.path.dirname(__file__))
 # Self-defined
 import utils
 
-# %% Get Parameters
-path = "../../Results/Experiments_1/2022-08-09_01-16-35/final.json"
-Parm = utils.parameter.read_json(path)
-recorder = Parm.recorder
+# %% Functions
+def get_path(file_name_list):
+    path_list = []
+    for file_name in file_name_list:
+        path_list.append([file_name, f"../../Results/Experiments_1/{file_name}/final.json"])
+    return path_list
+
 
 # %% Main Function
-def main():
-    pass
-
-# %%
 if __name__ == "__main__":
-    main()
+    file_name = ["2022-08-09_01-16-35"]
+    path_list = get_path(file_name)
+
+    for file_name, path in path_list:
+        print(file_name)
+        Parm = utils.parameter.read_json(path)
+        new = Parm.recorder.query("new")
+        break
             
+# %%

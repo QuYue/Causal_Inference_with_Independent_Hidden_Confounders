@@ -99,6 +99,7 @@ if __name__ == "__main__":
             record.aggregate({'new': 'sum', 'newnew': 'mean'})
             record['time'] = time.time()
             str = record.print_all_str()
+            print(str)
 
             # Testing
             for batch_idx, data in enumerate(test_loader):

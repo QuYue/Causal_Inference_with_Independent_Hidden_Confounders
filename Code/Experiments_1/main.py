@@ -107,5 +107,6 @@ if __name__ == "__main__":
             Parm.recorder[cv, epoch] = record
         # Parm.save(f"cv{cv}.json")
     Parm.save("final.json")
+    print("Done!")
 
 # %%

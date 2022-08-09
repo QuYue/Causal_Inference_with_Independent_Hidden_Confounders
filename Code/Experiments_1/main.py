@@ -105,7 +105,6 @@ if __name__ == "__main__":
                 data = [data.to(Parm.device) for data in data]
                 data = dict(zip(Parm.dataset.keylist, data))
             Parm.recorder[cv, epoch] = record
-        # Parm.save(f"cv{cv}.json")
     Parm.save("final.json")
     print("Done!")
 

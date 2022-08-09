@@ -181,7 +181,8 @@ class PARAM():
     def load_json(self, json):
         # Load from json
         self.__dict__.update(json)
-        self.setting()
+        self.random_setting()
+        self.dataset_setting()
         self.recorder = rd.Recorder()
         self.recorder.load_json(json['recorder'])
 

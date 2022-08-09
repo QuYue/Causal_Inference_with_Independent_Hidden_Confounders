@@ -11,25 +11,23 @@
 # %% Import Package
 # Basic
 import os
-import json
-import torch
-import numpy as np
-import time
-import datetime
 
 # Add path
 os.chdir(os.path.dirname(__file__))
 
 # Self-defined
 import utils
-import dataprocessor as dp
-import modeler as ml
-import recorder as rd
 
 # %% Get Parameters
 path = "../../Results/Experiments_1/2022-08-09_01-16-35/final.json"
 Parm = utils.parameter.read_json(path)
+recorder = Parm.recorder
 
 # %% Main Function
-    
+def main():
+    pass
+
+# %%
+if __name__ == "__main__":
+    main()
             

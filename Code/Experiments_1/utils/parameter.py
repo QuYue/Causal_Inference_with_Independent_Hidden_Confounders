@@ -33,6 +33,8 @@ import recorder as rd
 # %% Classes
 class PARAM():
     def __init__(self) -> None:
+        pass
+    def demo__init__(self) -> None:
         # Random seed
         self.seed = 1       # Random seed
         # Device
@@ -184,6 +186,13 @@ class PARAM():
         self.recorder.load_json(json['recorder'])
 
 # %% Functions
+def read_json(path):
+    Parm = PARAM()
+    with open(path, 'r', encoding='utf-8') as f:
+        d = json.load(f)
+    Parm.load_json(d)
+    return Parm
+
 def main():
     pass
 

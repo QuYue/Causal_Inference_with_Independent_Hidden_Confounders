@@ -26,13 +26,9 @@ import dataprocessor as dp
 import modeler as ml
 import recorder as rd
 
-# %% Set Super-parameters
-path = "../../Results/Experiments_1/2022-08-09_01-07-58/2022-08-09_01-07-58.json"
-Parm = utils.parameter.PARAM()
-
-with open(path, 'r', encoding='utf-8') as f:
-    d = json.load(f)
-Parm.load_json(d)
+# %% Get Parameters
+path = "../../Results/Experiments_1/2022-08-09_01-16-35/final.json"
+Parm = utils.parameter.read_json(path)
 
 # %% Main Function
     

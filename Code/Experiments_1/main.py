@@ -107,10 +107,5 @@ if __name__ == "__main__":
             Parm.recorder[cv, epoch] = record
         Parm.save(f"cv{cv}.json")
     Parm.save("final.json")
-# %% 1
-# recorder.save("save.json")
-# del recorder
 
-# recorder1 = rd.read_json("save.json")
-
-# quick sort
+# %%

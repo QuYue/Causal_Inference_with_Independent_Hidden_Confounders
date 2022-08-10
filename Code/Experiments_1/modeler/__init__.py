@@ -29,6 +29,20 @@ def get_model(model_name, kwargs):
     else:
         raise ValueError(f"There is no model called '{model_name}'.")
 
+def train(model_list):
+    if isinstance(model_list, list):
+        for model in model_list:
+            model.train()
+    else:
+        model_list.train()
+
+def eval(model_list):
+    if isinstance(model_list, list):
+        for model in model_list:
+            model.eval()
+    else:
+        model_list.eval()
+
 # %% Main Function
 if __name__ == '__main__':
     pass

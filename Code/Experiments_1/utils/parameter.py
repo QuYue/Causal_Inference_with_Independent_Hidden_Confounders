@@ -102,6 +102,12 @@ class PARAM():
         # Setting of models
         self.model_param_list = [self.model_param_setting(name) for name in self.model_name_list]
         self.model_list = [ml.get_model(param.name, param.dict) for param in self.model_param_list]
+    
+    def model_device_setting(self, device=None):
+        # Setting of models and devices
+        if device is None:
+            device = self.device
+        self.model_list = [model.to(device) for model in self.model_list]
 
     def model_param_setting(self, model_name):
         # Setting of parameters of models

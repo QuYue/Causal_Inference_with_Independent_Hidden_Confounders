@@ -47,6 +47,8 @@ class MyParam(utils.parameter.PARAM):
                                  "type_list": ['float', 'long', 'float', 'float']}}
         # Model
         self.model_name_list = ["s_learner", "t_learner"]   # Model name list
+        self.model_name_list = ["s_learner"]   # Model name list
+        self.model_save = True                               # Whether to save the model
         # Model Parameters
         self.model_param_set = {"s_learner":
                                     {"name": "S_Learner", 
@@ -70,7 +72,8 @@ class MyParam(utils.parameter.PARAM):
         self.now = datetime.datetime.now()  # Current time
         self.recorder = None                # Recorder (initialization)
         self.save_path = f"../../Results/Experiments_1/{self.now.strftime('%Y-%m-%d_%H-%M-%S')}"
-
+        # Checkpoints
+        self.ifcheckpoint = True            # If checkpoint
         # Setting
         self.setting()
 
@@ -83,16 +86,29 @@ if __name__ == "__main__":
     print("Start training ...")
     Parm.recorder = rd.Recorder_nones([dataset.cv, Parm.epochs])
     for cv in range(dataset.cv):
+        Parm.model_setting()        # Models initialization
+        Parm.model_device_setting() # Models device setting
         print(f"Cross Validation {cv}: {datetime.datetime.now().strftime('%Y-%m-%d_%H:%M:%S')}")
         train_loader, test_loader = dp.process.dataloader(dataset[cv], batch_size=Parm.batch_size, **Parm.dataset.dict)
         for epoch in range(Parm.epochs):
             print(f"Epoch {epoch}: {datetime.datetime .now().strftime('%Y-%m-%d_%H:%M:%S')}")
-            # Training
             record = rd.Record(index=epoch)
+            # Training
+            ml.train(Parm.model_list) # Train model
             for batch_idx, data in enumerate(train_loader):
                 data = [data.to(Parm.device) for data in data]
                 data = dict(zip(Parm.dataset.keylist, data))
-                batchrecord = rd.BatchRecord(size=data['x'].shape[0], index=batch_idx)  
+                batchrecord = rd.BatchRecord(size=data['x'].shape[0], index=batch_idx) 
+                
+                # Model
+                pred_list = []
+                for model in Parm.model_list:
+                    pred = model.predict(data)
+                    pred_list.append(pred)
+
+
+
+
                 batchrecord['new'] = [1, 2, 3]
                 batchrecord['newnew'] = [1, 2, 3]
                 record.add_batch(batchrecord)
@@ -101,12 +117,17 @@ if __name__ == "__main__":
             str = record.print_all_str()
 
             # Testing
+            ml.eval(Parm.model_list) # Testing model
             for batch_idx, data in enumerate(test_loader):
                 data = [data.to(Parm.device) for data in data]
                 data = dict(zip(Parm.dataset.keylist, data))
             Parm.recorder[cv, epoch] = record
         # Parm.save(f"cv{cv}.json")
-    Parm.save("final.json")
+    
+    print("Finish training ...\n")
+    if Parm.ifrecord:
+        Parm.save("final.json")
+        print("Records saved.")
     print("Done!")
 
 # %%

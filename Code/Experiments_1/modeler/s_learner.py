@@ -45,10 +45,32 @@ class S_Learner(nn.Module):
         Forward propagation.
         """
         sample_number = x.shape[0]
-        pred_y0 = self.net(torch.cat([x, torch.zeros([sample_number, 1])], dim=1))
-        pred_y1 = self.net(torch.cat([x, torch.ones([sample_number, 1])], dim=1))
+        pred_y0 = self.net(torch.cat([x, torch.zeros([sample_number, 1]).to(x.device)], dim=1))
+        pred_y1 = self.net(torch.cat([x, torch.ones([sample_number, 1]).to(x.device)], dim=1))
         return pred_y0, pred_y1
+    
+    def predict(self, data):
+        """
+        Predict.
+        """
+        if isinstance(data, dict):
+            x = data["x"]
+        else:
+            x = data
+        pred = self.forward(x)
+        pred = [i.unsqueeze(1) for i in pred]
+        pred = torch.cat(pred, dim=1)
+        return {"y_pred": pred}
 
+    # def fit(self, data, target):
+    #     """
+    #     Fit.
+    #     """
+    #     pred_y0, pred_y1 = self.forward(data)
+    #     loss = torch.mean(torch.abs(pred_y1-pred_y0-target))
+    #     return loss
+
+    
 
 # %% Main Function
 if __name__ == '__main__':

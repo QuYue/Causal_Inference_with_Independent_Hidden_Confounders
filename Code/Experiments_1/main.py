@@ -15,6 +15,7 @@ import torch
 import numpy as np
 import time
 import datetime
+import matplotlib.pyplot as plt
 
 # Add path
 os.chdir(os.path.dirname(__file__))
@@ -35,7 +36,7 @@ class MyParam(utils.parameter.PARAM):
         # Dataset
         self.dataset_name = "Synthetic"     # Dataset name
         self.train_valid_test = [4, 1, 1]   # The ratio of training, validation and test data
-        self.cv = 5                         # Fold number for cross-validation
+        self.cv = 1                         # Fold number for cross-validation
         # Dataset Parameters
         self.dataset_set = {"synthetic":
                                 {"name": "Synthetic",
@@ -44,18 +45,19 @@ class MyParam(utils.parameter.PARAM):
                                  "ifprint": False,
                                  "stratify": 't',
                                  "keylist": ['x', 't', 'y', 'potential_y'],
-                                 "type_list": ['float', 'long', 'float', 'float']}}
+                                 "typelist": [['float', 'gpu'], ['long', 'gpu'], ['float', 'gpu'], ['float', 'gpu']]}}
         # Model
         self.model_name_list = ["s_learner", "t_learner"]   # Model name list
         self.model_name_list = ["s_learner"]   # Model name list
-        self.model_save = True                               # Whether to save the model
+        self.model_save = True                 # Whether to save the model
         # Model Parameters
         self.model_param_set = {"s_learner":
                                     {"name": "S_Learner", 
                                      "input_size": self.dataset_set[self.dataset_name.lower().strip()]["data_dimensions"],
                                      "output_size": 1,
                                      "hidden_size": 15,
-                                     "layer_number": 3},
+                                     "layer_number": 3,
+                                     "optimizer": {"name": "Adam", "lr": 0.001}},
                                 "t_learner":
                                     {"name": "T_Learner",
                                      "input_size":self.dataset_set[self.dataset_name.lower().strip()]["data_dimensions"],
@@ -63,12 +65,12 @@ class MyParam(utils.parameter.PARAM):
                                      "hidden_size":15,
                                      "layer_number":3}}
         # Training
-        self.epochs = 10            # Epochs
+        self.epochs = 1000            # Epochs
         self.batch_size = 1000      # Batch size
         self.learn_rate = 0.01      # Learning rate
         self.test_epoch = 1         # Test once every few epochs
         # Records
-        self.ifrecord = True                # If record
+        self.ifrecord = False                # If record
         self.now = datetime.datetime.now()  # Current time
         self.recorder = None                # Recorder (initialization)
         self.save_path = f"../../Results/Experiments_1/{self.now.strftime('%Y-%m-%d_%H-%M-%S')}"
@@ -78,6 +80,8 @@ class MyParam(utils.parameter.PARAM):
         self.setting()
 
 Parm = MyParam()
+
+
 
 # %% Main Function
 if __name__ == "__main__":
@@ -99,22 +103,17 @@ if __name__ == "__main__":
                 data = [data.to(Parm.device) for data in data]
                 data = dict(zip(Parm.dataset.keylist, data))
                 batchrecord = rd.BatchRecord(size=data['x'].shape[0], index=batch_idx) 
-                
+                batchrecord['train_loss'] = []
                 # Model
                 pred_list = []
                 for model in Parm.model_list:
-                    pred = model.predict(data)
-                    pred_list.append(pred)
-
-
-
-
-                batchrecord['new'] = [1, 2, 3]
-                batchrecord['newnew'] = [1, 2, 3]
+                    loss = model.on_train(data)
+                    batchrecord['train_loss'].append(loss.item() * data['x'].shape[0])
                 record.add_batch(batchrecord)
-            record.aggregate({'new': 'sum', 'newnew': 'mean'})
+            record.aggregate({'train_loss': 'mean_size'})
             record['time'] = time.time()
             str = record.print_all_str()
+            print(str)
 
             # Testing
             ml.eval(Parm.model_list) # Testing model
@@ -131,3 +130,4 @@ if __name__ == "__main__":
     print("Done!")
 
 # %%
+plt.plot(Parm.recorder.query('train_loss')[0])

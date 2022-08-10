@@ -179,7 +179,7 @@ def data_split(data, dataset_name, train_ratio=0.8, cv=1, seed=1, stratify=None,
 
 
 # CTorch
-def convert_torch(data, key_list, type_list):
+def convert_torch(data, key_list, type_list, device=None):
     '''
     The function of converting data to torch.Tensor.
     
@@ -203,12 +203,19 @@ def convert_torch(data, key_list, type_list):
     dtype_dict = {'int': torch.int, 'int32': torch.int32, 'int64': torch.int64, 'long': torch.long,
                   'float': torch.float, 'float32': torch.float32, 'float64': torch.float64}
     for i, key in enumerate(key_list):
-        data_list.append(torch.tensor(data[key], dtype=dtype_dict[type_list[i]]))
+        if isinstance(type_list[i], list):
+            if device is not None and type_list[i][1] == 'gpu':
+                data_s = torch.tensor(data[key], dtype=dtype_dict[type_list[i][0]]).to(device)
+            else:
+                data_s = torch.tensor(data[key], dtype=dtype_dict[type_list[i][0]])
+        else:
+            data_s = torch.tensor(data[key], dtype=dtype_dict[type_list[i]])
+        data_list.append(data_s)
     return data_list
 
 
 # Data Loader
-def dataloader(dataset, batch_size=32, keylist=['x', 'y'], typelist=None, pin_memory=False, **kwargs):
+def dataloader(dataset, batch_size=32, keylist=['x', 'y'], typelist=None, pin_memory=False, device=None, **kwargs):
     '''
     data loader
         - Load the dataset.
@@ -224,6 +231,8 @@ def dataloader(dataset, batch_size=32, keylist=['x', 'y'], typelist=None, pin_me
         The keys list of data. (default: ['x', 'y'])
     typelist: list, optional
         The types list of data. (default: None)
+    device: torch.device, optional
+        The device. (default: None)
     pin_memory: bool, optional
         Pin memory. (default: False)
 
@@ -247,8 +256,8 @@ def dataloader(dataset, batch_size=32, keylist=['x', 'y'], typelist=None, pin_me
         typelist = ['float'] * len(keylist)
     
     # initial data loader
-    train_list = convert_torch(dataset.train, keylist, typelist)
-    test_list = convert_torch(dataset.test, keylist, typelist)
+    train_list = convert_torch(dataset.train, keylist, typelist, device)
+    test_list = convert_torch(dataset.test, keylist, typelist, device)
 
     # TensorDataset
     train_dataset = Data.TensorDataset(*train_list)

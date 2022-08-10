@@ -23,7 +23,7 @@ else:
 
 
 # %% Functions
-def load_dataset(dataset_name, train_ratio=0.8, cv=1, seed=None, **kwargs):
+def load_dataset(dataset_name, train_ratio=0.8, cv=1, seed=None, device=None, **kwargs):
     '''
     The function of splitting data which can: 
         - Load the dataset.

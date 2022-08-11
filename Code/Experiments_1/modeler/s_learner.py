@@ -24,7 +24,7 @@ class S_Learner(nn.Module):
     """
     S_Learner.
     """
-    def __init__(self, input_size, output_size=1, hidden_size=10, layer_number=3, optimizer={"name": "Adam"}, **kwargs):
+    def __init__(self, input_size, output_size=1, hidden_size=10, layer_number=3, dropout=0.5, optimizer={"name": "Adam"}, **kwargs):
         """
         Initialize S_Learner model.
         """
@@ -33,6 +33,7 @@ class S_Learner(nn.Module):
         self.output_size = output_size
         self.hidden_size = hidden_size
         self.layer_number = layer_number
+        self.dropout = dropout
         self.optimizer_param = optimizer
         self.create_model()
         self.create_optimizer()
@@ -45,7 +46,7 @@ class S_Learner(nn.Module):
         self.net = nn.Sequential()
         self.net.add_module('fc0', nn.Linear(self.input_size+1, self.hidden_size))
         for i in range(self.layer_number-1):
-            self.net.add_module(f'fc{i+1}', layers.FullyConnected(self.hidden_size, self.hidden_size, 0.5, [nn.ReLU()]))
+            self.net.add_module(f'fc{i+1}', layers.FullyConnected(self.hidden_size, self.hidden_size, self.dropout, [nn.ReLU()]))
         self.net.add_module(f'fc_{self.layer_number}', layers.FullyConnected(self.hidden_size, self.output_size))
 
     def create_optimizer(self):
@@ -83,7 +84,6 @@ class S_Learner(nn.Module):
         else:
             x = data
         pred = self.forward(x)
-        # pred = [i.unsqueeze(1) for i in pred]
         pred = torch.cat(pred, dim=1)
         return {"y_pred": pred}
 
@@ -108,6 +108,15 @@ class S_Learner(nn.Module):
         loss = self.loss(data, pred)
         loss.backward()
         self.optimizer.step()
+        return loss
+
+    def on_test(self, data):
+        """
+        Testing.
+        """
+        self.eval()
+        pred = self.predict(data)
+        loss = self.loss(data, pred).item()
         return loss
 
 

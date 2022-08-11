@@ -104,7 +104,6 @@ class DataSet(utils.tools.MyStruct):
         """
         return self.__struct_name__ + self.content_print + f" with {len(self.data)}-folds" # put constructor arguments in the ()
 
-        
 
 # %% Functions
 # Data split

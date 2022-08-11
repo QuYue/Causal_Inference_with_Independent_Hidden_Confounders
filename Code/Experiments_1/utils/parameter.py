@@ -189,8 +189,10 @@ class PARAM():
         self.__dict__.update(json)
         self.random_setting()
         self.dataset_setting()
-        self.recorder = rd.Recorder()
-        self.recorder.load_json(json['recorder'])
+        for k, v in self.recorder.items():
+            temp = rd.Recorder()
+            temp.load_json(v)
+            self.recorder[k] = temp
 
 # %% Functions
 def read_json(path):

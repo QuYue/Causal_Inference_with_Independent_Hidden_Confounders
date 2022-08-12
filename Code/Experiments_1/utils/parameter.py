@@ -102,6 +102,12 @@ class PARAM():
         # Setting of models
         self.model_param_list = [self.model_param_setting(name) for name in self.model_name_list]
         self.model_list = [ml.get_model(param.name, param.dict) for param in self.model_param_list]
+    
+    def model_device_setting(self, device=None):
+        # Setting of models and devices
+        if device is None:
+            device = self.device
+        self.model_list = [model.to(device) for model in self.model_list]
 
     def model_param_setting(self, model_name):
         # Setting of parameters of models
@@ -165,7 +171,9 @@ class PARAM():
         param_dict.pop('model_param_list')
         param_dict.pop('model_list')
         param_dict['now'] = param_dict['now'].strftime("%Y-%m-%d %H:%M:%S")
-        param_dict['recorder'] = param_dict['recorder'].tojson()
+        param_dict['recorder'] = self.recorder.copy()
+        for key in param_dict["recorder"].keys():
+            param_dict['recorder'][key] = param_dict['recorder'][key].tojson()
         return param_dict
     
     def save(self, filename=None):
@@ -183,8 +191,10 @@ class PARAM():
         self.__dict__.update(json)
         self.random_setting()
         self.dataset_setting()
-        self.recorder = rd.Recorder()
-        self.recorder.load_json(json['recorder'])
+        for k, v in self.recorder.items():
+            temp = rd.Recorder()
+            temp.load_json(v)
+            self.recorder[k] = temp
 
 # %% Functions
 def read_json(path):

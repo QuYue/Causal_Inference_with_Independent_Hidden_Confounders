@@ -28,13 +28,13 @@ def get_path(file_name_list):
 
 # %% Main Function
 if __name__ == "__main__":
-    file_name = ["2022-08-09_01-16-35"]
+    file_name = ["2022-08-12_13-46-58"]
     path_list = get_path(file_name)
 
     for file_name, path in path_list:
         print(file_name)
         Parm = utils.parameter.read_json(path)
-        new = Parm.recorder.query("new")
+        new = Parm.recorder['test'].query("s_learner_test_loss")
         break
             
 # %%

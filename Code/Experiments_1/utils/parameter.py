@@ -171,7 +171,9 @@ class PARAM():
         param_dict.pop('model_param_list')
         param_dict.pop('model_list')
         param_dict['now'] = param_dict['now'].strftime("%Y-%m-%d %H:%M:%S")
-        param_dict['recorder'] = param_dict['recorder'].tojson()
+        param_dict['recorder'] = self.recorder.copy()
+        for key in param_dict["recorder"].keys():
+            param_dict['recorder'][key] = param_dict['recorder'][key].tojson()
         return param_dict
     
     def save(self, filename=None):

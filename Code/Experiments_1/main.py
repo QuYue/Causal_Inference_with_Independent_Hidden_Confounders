@@ -36,7 +36,7 @@ class MyParam(utils.parameter.PARAM):
         # Dataset
         self.dataset_name = "Synthetic"     # Dataset name
         self.train_valid_test = [4, 1, 1]   # The ratio of training, validation and test data
-        self.cv = 1                         # Fold number for cross-validation
+        self.cv = 5                         # Fold number for cross-validation
         # Dataset Parameters
         self.dataset_set = {"synthetic":
                                 {"name": "Synthetic",
@@ -68,12 +68,12 @@ class MyParam(utils.parameter.PARAM):
                                      "dropout": 0,
                                      "optimizer": {"name": "SGD", "lr": 0.001}}}
         # Training
-        self.epochs = 1000            # Epochs
+        self.epochs = 100            # Epochs
         self.batch_size = 1000      # Batch size
         self.learn_rate = 0.01      # Learning rate
         self.test_epoch = 1         # Test once every few epochs
         # Records
-        self.ifrecord = False                # If record
+        self.ifrecord = True                # If record
         self.now = datetime.datetime.now()  # Current time
         self.recorder = dict()                # Recorder (initialization)
         self.save_path = f"../../Results/Experiments_1/{self.now.strftime('%Y-%m-%d_%H-%M-%S')}"
@@ -98,7 +98,6 @@ if __name__ == "__main__":
         train_loader, test_loader = dp.process.dataloader(dataset[cv], batch_size=Parm.batch_size, **Parm.dataset.dict)
         start_cv = time.time()
         for epoch in range(Parm.epochs):
-            # print(f"Epoch {epoch}: {datetime.datetime .now().strftime('%Y-%m-%d_%H:%M:%S')}")
             # Training
             train_record = rd.Record(index=epoch)
             ml.train(Parm.model_list) # Train model
@@ -158,5 +157,6 @@ for model_name in Parm.model_name_list:
     plt.plot(Parm.recorder['train'].query(f'{model_name}_train_loss')[0], label=f'{model_name}_train_loss')[0]
     plt.plot(Parm.recorder['test'].query(f'{model_name}_test_loss')[0], label=f'{model_name}_test_loss')[0]
 plt.legend()
+plt.grid('on')
 plt.show()
 # %%

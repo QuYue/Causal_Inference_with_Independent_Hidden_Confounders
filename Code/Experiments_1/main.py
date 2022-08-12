@@ -48,7 +48,6 @@ class MyParam(utils.parameter.PARAM):
                                  "typelist": ['float', 'long', 'float', 'float']}}
         # Model
         self.model_name_list = ["s_learner", "t_learner"]   # Model name list
-        # self.model_name_list = ["s_learner"]   # Model name list
         self.model_save = True                 # Whether to save the model
         # Model Parameters
         self.model_param_set = {"s_learner":

@@ -27,7 +27,7 @@ import modeler as ml
 import recorder as rd
 
 # %% Set Super-parameters
-class MyParam(utils.parameter.PARAM):
+class MyParam(rd.parameter.PARAM):
     def __init__(self) -> None:
         # Random seed
         self.seed = 1       # Random seed
@@ -67,7 +67,7 @@ class MyParam(utils.parameter.PARAM):
                                      "dropout": 0,
                                      "optimizer": {"name": "SGD", "lr": 0.001}}}
         # Training
-        self.epochs = 100            # Epochs
+        self.epochs = 10            # Epochs
         self.batch_size = 1000      # Batch size
         self.learn_rate = 0.01      # Learning rate
         self.test_epoch = 1         # Test once every few epochs
@@ -88,8 +88,8 @@ if __name__ == "__main__":
     print("Loading dataset ...")
     dataset = dp.datasets.load_dataset(Parm.dataset_name, seed=Parm.seed, **Parm.dataset.dict)
     print("Start training ...")
-    Parm.recorder['train'] = rd.Recorder_nones([dataset.cv, Parm.epochs])
-    Parm.recorder['test'] = rd.Recorder_nones([dataset.cv, Parm.epochs])
+    Parm.recorder['train'] = rd.record.Recorder_nones([dataset.cv, Parm.epochs])
+    Parm.recorder['test'] = rd.record.Recorder_nones([dataset.cv, Parm.epochs])
     for cv in range(dataset.cv):
         Parm.model_setting()        # Models initialization
         Parm.model_device_setting() # Models device setting
@@ -98,12 +98,12 @@ if __name__ == "__main__":
         start_cv = time.time()
         for epoch in range(Parm.epochs):
             # Training
-            train_record = rd.Record(index=epoch)
+            train_record = rd.record.Record(index=epoch)
             ml.train(Parm.model_list) # Train model
             for batch_idx, data in enumerate(train_loader):
                 data = [data.to(Parm.device) for data in data]
                 data = dict(zip(Parm.dataset.keylist, data))
-                batchrecord = rd.BatchRecord(size=data['x'].shape[0], index=batch_idx) 
+                batchrecord = rd.record.BatchRecord(size=data['x'].shape[0], index=batch_idx) 
                 for model_name in Parm.model_name_list:
                     batchrecord[f"{model_name}_train_loss"] = []
                 # Model
@@ -118,12 +118,12 @@ if __name__ == "__main__":
                 train_record.aggregate({f'{model_name}_train_loss': 'mean_size'})
 
             # Testing
-            test_record = rd.Record(index=epoch)
+            test_record = rd.record.Record(index=epoch)
             ml.eval(Parm.model_list) # Testing model
             for batch_idx, data in enumerate(test_loader):
                 data = [data.to(Parm.device) for data in data]
                 data = dict(zip(Parm.dataset.keylist, data))
-                batchrecord = rd.BatchRecord(size=data['x'].shape[0], index=batch_idx) 
+                batchrecord = rd.record.BatchRecord(size=data['x'].shape[0], index=batch_idx) 
                 for model_name in Parm.model_name_list:
                     batchrecord[f"{model_name}_test_loss"] = []
                 # Model
@@ -146,7 +146,7 @@ if __name__ == "__main__":
     
     print("Finish training ...\n")
     if Parm.ifrecord:
-        Parm.save("final.json")
+        Parm.save("results.json")
         print("Records saved.")
     print("Done!")
 

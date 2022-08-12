@@ -17,24 +17,17 @@ os.chdir(os.path.dirname(__file__))
 
 # Self-defined
 import utils
-
-# %% Functions
-def get_path(file_name_list):
-    path_list = []
-    for file_name in file_name_list:
-        path_list.append([file_name, f"../../Results/Experiments_1/{file_name}/final.json"])
-    return path_list
-
+import recorder as rd
 
 # %% Main Function
 if __name__ == "__main__":
-    file_name = ["2022-08-12_13-46-58"]
-    path_list = get_path(file_name)
-
-    for file_name, path in path_list:
-        print(file_name)
-        Parm = utils.parameter.read_json(path)
-        new = Parm.recorder['test'].query("s_learner_test_loss")
-        break
+    analyst = rd.analysis.Analyst('../../Results')
+    experiment_name = {'d': '08-12_18-07-39'}
+    experiments = analyst.choose_experiments(experiment_name)
+    experiments_results = analyst.read_json(experiments)
+    analyst.draw_results(experiments_results, 
+                    cv = [0,1,2,3,4],
+                    metric_list=[[[{"train":"t_learner_train_loss"}, {'test': "t_learner_test_loss"}], {"test":"s_learner_test_loss"}]], 
+                    model='merge')
             
 # %%

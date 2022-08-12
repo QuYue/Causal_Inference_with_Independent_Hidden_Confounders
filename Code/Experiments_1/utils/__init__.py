@@ -13,6 +13,5 @@
 
 # Modules
 from . import tools
-from . import parameter
 
 # %%  Classes

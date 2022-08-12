@@ -11,6 +11,7 @@
 # %% Import Packages
 # Basic
 import os
+import sys
 import json
 import random
 import torch
@@ -22,13 +23,14 @@ import datetime
 
 # Self-defined
 if __package__ is None:
-    import tools
+    sys.path.append('..')
+    import record
 else:
-    from . import tools
+    from . import record
 
 # Modules
 import modeler as ml
-import recorder as rd
+from utils import tools
 
 # %% Classes
 class PARAM():
@@ -192,7 +194,7 @@ class PARAM():
         self.random_setting()
         self.dataset_setting()
         for k, v in self.recorder.items():
-            temp = rd.Recorder()
+            temp = record.Recorder()
             temp.load_json(v)
             self.recorder[k] = temp
 
